@@ -2,28 +2,30 @@ import './App.css';
 import { useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
 
-const defaultUsers = [
-  { name: "Max", raza: "Labrador", edad: 5 },
-  { name: "Luna", raza: "Husky", edad: 3 },
-  { name: "Rocky", raza: "Bulldog", edad: 4 }
-];
-
 const App = () => {
-  const [users, setUsers] = useState(defaultUsers);
+  const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [newUser, setNewUser] = useState({ name: "", raza: "", edad: "" });
 
   useEffect(() => {
-    fetch("http://tu-servidor.com/users/")
+    fetch("http://3.16.66.210:8000/users/")
       .then((res) => res.json())
-      .then((data) => setUsers(data))
+      .then((data) => {
+        setUsers(data);
+        setFilteredUsers(data); // Inicializar lista filtrada
+      })
       .catch((error) => console.error("Error al obtener usuarios:", error));
   }, []);
 
   const handleSearch = (query) => {
-    fetch(`http://tu-servidor.com/users/search?query=${query}`)
-      .then((res) => res.json())
-      .then((data) => setUsers(data))
-      .catch((error) => console.error("Error en la búsqueda:", error));
+    if (query.trim() === "") {
+      setFilteredUsers(users);
+    } else {
+      const filtered = users.filter(user =>
+        user.name.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredUsers(filtered);
+    }
   };
 
   const handleChange = (e) => {
@@ -40,7 +42,8 @@ const App = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        setUsers([...users, data]); // Agregar nuevo usuario a la lista
+        setUsers([...users, data]); // Agregar nuevo usuario a la lista original
+        setFilteredUsers([...filteredUsers, data]); // También actualizar la lista filtrada
         setNewUser({ name: "", raza: "", edad: "" }); // Limpiar formulario
       })
       .catch((error) => console.error("Error al registrar usuario:", error));
@@ -52,11 +55,32 @@ const App = () => {
       <SearchBar onSearch={handleSearch} />
 
       <h2>Registrar Nuevo Usuario</h2>
-      <form onSubmit={handleSubmit} className="form">
-        <input type="text" name="name" placeholder="Nombre" value={newUser.name} onChange={handleChange} required />
-        <input type="text" name="raza" placeholder="Raza" value={newUser.raza} onChange={handleChange} required />
-        <input type="number" name="edad" placeholder="Edad" value={newUser.edad} onChange={handleChange} required />
-        <button type="submit">Registrar</button>
+      <form onSubmit={handleSubmit} className="user-form">
+        <input
+          type="text"
+          name="name"
+          placeholder="Nombre"
+          value={newUser.name}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="raza"
+          placeholder="Raza"
+          value={newUser.raza}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="number"
+          name="edad"
+          placeholder="Edad"
+          value={newUser.edad}
+          onChange={handleChange}
+          required
+        />
+        <button type="submit" className="btn">Registrar</button>
       </form>
 
       <table className="table">
@@ -68,8 +92,8 @@ const App = () => {
           </tr>
         </thead>
         <tbody>
-          {users.length > 0 ? (
-            users.map((user, index) => (
+          {filteredUsers.length > 0 ? (
+            filteredUsers.map((user, index) => (
               <tr key={index}>
                 <td>{user.name}</td>
                 <td>{user.raza || "N/A"}</td>
