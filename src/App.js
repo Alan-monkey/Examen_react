@@ -2,8 +2,14 @@ import './App.css';
 import { useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
 
+const defaultUsers = [
+  { name: "Max", raza: "Labrador", edad: 5 },
+  { name: "Luna", raza: "Husky", edad: 3 },
+  { name: "Rocky", raza: "Bulldog", edad: 4 }
+];
+
 const App = () => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState(defaultUsers);
   const [newUser, setNewUser] = useState({ name: "", raza: "", edad: "" });
 
   useEffect(() => {
@@ -27,7 +33,7 @@ const App = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    fetch("http://3.16.66.210:8000//users/", {
+    fetch("http://3.16.66.210:8000/users/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newUser),
@@ -41,36 +47,15 @@ const App = () => {
   };
 
   return (
-    <div>
+    <div className="container">
       <h1>Lista de Usuarios</h1>
       <SearchBar onSearch={handleSearch} />
 
       <h2>Registrar Nuevo Usuario</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Nombre"
-          value={newUser.name}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="raza"
-          placeholder="Raza"
-          value={newUser.raza}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="number"
-          name="edad"
-          placeholder="Edad"
-          value={newUser.edad}
-          onChange={handleChange}
-          required
-        />
+      <form onSubmit={handleSubmit} className="form">
+        <input type="text" name="name" placeholder="Nombre" value={newUser.name} onChange={handleChange} required />
+        <input type="text" name="raza" placeholder="Raza" value={newUser.raza} onChange={handleChange} required />
+        <input type="number" name="edad" placeholder="Edad" value={newUser.edad} onChange={handleChange} required />
         <button type="submit">Registrar</button>
       </form>
 
