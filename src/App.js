@@ -1,4 +1,4 @@
-import './App.css';
+
 import { useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
 
@@ -7,6 +7,25 @@ const defaultUsers = [
   { name: "Luna", raza: "Husky", edad: 3 },
   { name: "Rocky", raza: "Bulldog", edad: 4 }
 ];
+
+const styles = {
+  app: {
+    textAlign: "center",
+  },
+  appHeader: {
+    backgroundColor: "#282c34",
+    minHeight: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "calc(10px + 2vmin)",
+    color: "white",
+  },
+  appLink: {
+    color: "#61dafb",
+  },
+};
 
 const App = () => {
   const [users, setUsers] = useState(defaultUsers);
@@ -47,7 +66,8 @@ const App = () => {
   };
 
   return (
-    <div className="container">
+<div style={styles.app}>
+  <header style={styles.appHeader}>
       <h1>Lista de Usuarios</h1>
       <SearchBar onSearch={handleSearch} />
 
@@ -83,8 +103,11 @@ const App = () => {
           )}
         </tbody>
       </table>
-    </div>
+      </header>
+</div>
   );
 };
+
+
 
 export default App;
