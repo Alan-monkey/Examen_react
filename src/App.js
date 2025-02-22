@@ -1,25 +1,35 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState, useEffect } from "react";
+import SearchBar from "./SearchBar";
 
-function App() {
+const App = () => {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    fetch("http://tu-servidor.com/users/")
+      .then((res) => res.json())
+      .then((data) => setUsers(data));
+  }, []);
+
+  const handleSearch = (query) => {
+    fetch(`http://tu-servidor.com/users/search?query=${query}`)
+      .then((res) => res.json())
+      .then((data) => setUsers(data));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Lista de Usuarios</h1>
+      <SearchBar onSearch={handleSearch} />
+      <ul>
+        {users.map((user) => (
+          <li key={user.id}>
+            {user.name} - {user.raza} - {user.edad} años
+          </li>
+        ))}
+      </ul>
     </div>
   );
-}
+};
 
 export default App;
