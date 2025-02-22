@@ -27,7 +27,7 @@ const App = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    fetch("http://tu-servidor.com/users/", {
+    fetch("http://3.16.66.210:8000//users/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newUser),
